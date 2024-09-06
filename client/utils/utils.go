@@ -10,6 +10,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strings"
 )
 
 type Mensaje struct {
@@ -34,12 +35,21 @@ func IniciarConfiguracion(filePath string) *globals.Config {
 	return config
 }
 
-func LeerConsola() {
+func LeerConsola() []string {
 	// Leer de la consola
+	mensajes := []string{}
 	reader := bufio.NewReader(os.Stdin)
-	log.Println("Ingrese los mensajes")
-	text, _ := reader.ReadString('\n')
-	log.Print(text)
+	log.Println("Ingrese el mensaje a empaquetar y presione enter. Para finalizar presione enter sin ingresar texto")
+	for {
+		text, _ := reader.ReadString('\n')
+		text = strings.TrimSpace(text)
+		if text == "" {
+			break
+		}
+		log.Print(text)
+		mensajes = append(mensajes, text)
+	}
+	return mensajes
 }
 
 func GenerarYEnviarPaquete() {
